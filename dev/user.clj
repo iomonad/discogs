@@ -5,8 +5,11 @@
 
 (comment
 
-  (def client (dc/mk-client "etohthu"))
+  (def client (dc/mk-client))
 
-  (db/search client {:q "Foo"})
+  (dc/set-quota-reporter-callback! client
+                                   (fn [report]
+                                     (println report)))
 
-)
+  (def results (db/search client {:label "Rephlex"}))
+  )
