@@ -12,8 +12,9 @@
                                       :password :env/clojars_password
                                       :sign-releases false}]]
   :dependencies [[org.clojure/clojure "1.12.0"]
-                 [clj-http            "3.13.0"]
-                 [metosin/jsonista    "0.3.13"]]
+                 [clj-http "3.13.0"]
+                 [metosin/jsonista "0.3.13"]
+                 [metosin/malli "0.18.0"]]
   :profiles {:dev {:dependencies [[org.clojure/tools.namespace "1.5.0"]]
                    :source-paths ["dev"]
                    :resource-paths ["dev-resources"]
