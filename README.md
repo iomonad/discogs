@@ -1,16 +1,11 @@
 # discogs  [![Clojure CI](https://github.com/iomonad/discogs/actions/workflows/clojure.yml/badge.svg?branch=master)](https://github.com/iomonad/discogs/actions/workflows/clojure.yml) [![Clojars Project](https://img.shields.io/clojars/v/io.trosa/discogs.svg)](https://clojars.org/io.trosa/discogs) [![cljdoc badge](https://cljdoc.org/badge/io.trosa/discogs)](https://cljdoc.org/d/io.trosa/discogs) <a href="https://github.com/iomonad/components"><img src=".github/banner.png" height="280" align="right"></a>
 
-
-
-
 > [!NOTE]
 > A fully-featured, data-oriented, [Discogs](https://discogs.com) API Client written in pure clojure.
 
 ## Usage
 
 ### Create a Client
-
-> TODO
 
 ### Interact With Database
 
@@ -19,12 +14,6 @@
 ### Commons Algorithms
 
 > TODO
-
-## Changelog
-
-### 0.1.0
-#### Added
-- Client first working version, all the core primitives to interact with database.
 
 ## Disclaimer of Affiliation with Discogs
 
