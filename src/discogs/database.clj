@@ -1,4 +1,5 @@
 (ns discogs.database
+  "Database methods"
   (:require [discogs.client :as dc]
             [discogs.specs :as ds]
             [discogs.utils :refer [map-results]]
