@@ -20,6 +20,12 @@
 
 > TODO
 
+## Changelog
+
+### 0.1.0
+#### Added
+- Client first working version, all the core primitives to interact with database.
+
 ## Disclaimer of Affiliation with Discogs
 
 This software/library is an independent project developed by its author(s) and is not affiliated with, sponsored by,
