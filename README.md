@@ -1,4 +1,4 @@
-# discogs  [![Clojure CI](https://github.com/iomonad/discogs/actions/workflows/clojure.yml/badge.svg?branch=master)](https://github.com/iomonad/discogs/actions/workflows/clojure.yml) [![Clojars Project](https://img.shields.io/clojars/v/io.trosa/discogs.svg)](https://clojars.org/io.trosa/discogs) <a href="https://github.com/iomonad/components"><img src=".github/banner.png" height="280" align="right"></a>
+# discogs  [![Clojure CI](https://github.com/iomonad/discogs/actions/workflows/clojure.yml/badge.svg?branch=master)](https://github.com/iomonad/discogs/actions/workflows/clojure.yml) [![Clojars Project](https://img.shields.io/clojars/v/io.trosa/discogs.svg)](https://clojars.org/io.trosa/discogs) [![cljdoc badge](https://cljdoc.org/badge/io.trosa/discogs)](https://cljdoc.org/d/io.trosa/discogs) <a href="https://github.com/iomonad/components"><img src=".github/banner.png" height="280" align="right"></a>
 
 
 
