@@ -30,7 +30,7 @@ There is differents way to create a Discogs client, here is a detailed guide to 
 ```clojure
 (require '[discogs.client :as dc])
 
-(def client (dc/mk-client "ZrUgstGwOmYzWChuPXrH" "S3FEVERXTUdFR1ZQSEhtclNYckljTmdQZ3ZoY0NocloK"))
+(def client (dc/mk-client "ZrUgstGwOmYzWChuPXrH" "S3FEVERXljTmdQZ3ZoY0NocloK"))
 ```
 
 #### 3. Create Using PAT
@@ -59,6 +59,23 @@ To generate a Personal Access Token (PAT) for the Discogs API, follow these step
 
 (def client (dc/mk-client "pat_ZrUgstGNqDTDWMGWChuPXrH"))
 ```
+
+### Monitor Quota Usage
+
+You can monitor API usage by adding client request callback as follow:
+
+```clojure
+(require '[discogs.reporter :as dr])
+
+(dr/set-quota-reporter-callback! client (fn [quota] (println "Quota:" quota)))
+
+;; Or use default one
+
+(dr/set-quota-reporter-callback! client dr/default-reporter)
+```
+
+Default callback will monitor when quota is below 10 left. (Logged as a warn)
+
 
 ### Interact With Database
 
