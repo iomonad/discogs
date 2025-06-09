@@ -7,6 +7,59 @@
 
 ### Create a Client
 
+There is differents way to create a Discogs client, here is a detailed guide to find what fit the best for your use-case:
+
+#### 1. Create anonymous client
+> [!NOTE]
+> Requests are throttled by the server by source IP to **60** per minute for authenticated requests, and **25 per minute** for unauthenticated requests, with some exceptions.
+
+```clojure
+(require '[discogs.client :as dc])
+
+(def client (dc/mk-client))
+```
+
+
+#### 2. Create client for application Key & Secrets
+
+- **Go to Discogs Developers Portal:**  
+  Visit [Discogs API Documentation](https://www.discogs.com/developers/) to create your developer account
+- **Create an App:**  
+  In your developer settings, create a new application. You will receive a **Consumer Key** and **Consumer Secret**.
+
+```clojure
+(require '[discogs.client :as dc])
+
+(def client (dc/mk-client "ZrUgstGwOmYzWChuPXrH" "S3FEVERXTUdFR1ZQSEhtclNYckljTmdQZ3ZoY0NocloK"))
+```
+
+#### 3. Create Using PAT
+
+To generate a Personal Access Token (PAT) for the Discogs API, follow these steps:
+
+1. **Log in to your Discogs Account:**  
+   Go to the Discogs website and sign in with your username and password.
+2. **Navigate to Developer Settings:**  
+   - Click your user avatar (usually in the top-right corner).
+   - Select **Settings** from the dropdown menu.
+   - Go to the **Developers** section.
+3. **Generate a New Token:**  
+   - In the Developers section, look for the option to **Generate new token**.
+   - Click it to create your personal access token.
+4. **Store the Token Securely:**  
+   - Copy the generated token and keep it safe—do not share it or commit it to public repositories.
+   - You can use it directly in your API requests as an authentication header.
+
+> [!WARNING]
+> This token is only valid for your own account and does not allow access to other users’ data unless you use OAuth for broader permissions.
+
+
+```clojure
+(require '[discogs.client :as dc])
+
+(def client (dc/mk-client "pat_ZrUgstGNqDTDWMGWChuPXrH"))
+```
+
 ### Interact With Database
 
 > TODO
