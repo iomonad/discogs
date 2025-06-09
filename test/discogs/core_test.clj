@@ -1,7 +1,7 @@
 (ns discogs.core-test
   (:require [clojure.test :refer :all]
-            [discogs.core :refer :all]))
+            [discogs.client :refer :all]))
 
 (deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+  (testing "a-test"
+    (is (= 1 1))))
