@@ -4,10 +4,18 @@
 (def DiscogsResourceType
   [:enum "release" "master" "artist" "label"])
 
+(def DiscogsReleasesParameters
+  [:map
+   {:title "Releases Parameters"
+    :description "Parameters for Release route"
+    :closed true}
+   [:curr_abbr {:optional true} :string]])
+
 (def DiscogsSearchParameters
   [:map
    {:title "Search Parameters"
-    :description "Parameters for search API"}
+    :description "Parameters for search API"
+    :closed true}
    [:q {:optional true
         :description "Your search query"}
     :string]

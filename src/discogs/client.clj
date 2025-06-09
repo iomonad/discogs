@@ -1,18 +1,23 @@
 (ns discogs.client
   (:require [clj-http.client :as http]
             [jsonista.core :as json]
-            [discogs.reporter :as report]))
+            [discogs.reporter :as report]
+            [clojure.tools.logging :as log]))
 
 (defn- client-version [] (System/getProperty "discogs.version"))
-(defonce user-agent (format "clj-discogs/%s +https://github.com/iomonad/discogs" (client-version)))
-(defonce api-endpoint "https://api.discogs.com")
+(defonce ^:private user-agent (format "clj-discogs/%s +https://github.com/iomonad/discogs" (client-version)))
+(defonce ^:private api-endpoint "https://api.discogs.com")
 
 (defn mk-client
   "Build a Discogs API client.
 
-  0. No argument => Anonymous
-  1. Pat Token => Use Account
-  2. Key & Secret => Registered Application"
+  Usage:
+
+  ;; Create Anonymous client, some API Methods will not work
+  (def client (mk-client))
+
+  ;; Create client with PAT
+  (def client (mk-client \"cWyNjw....MfhcYOZ\"))"
   {:added "0.1.0"}
   ([]
    {:method :anonymous
@@ -22,17 +27,12 @@
    (merge
     (mk-client)
     {:method :pat
-     :token (atom discogs-pat-token)}))
-  ([_discogs-key _discogs-secret]
-   (merge
-    (mk-client)
-    {:method :key+secret
-     ;; Not Implemented for the
-     ;; Moment
-     :token (atom nil)})))
+     :token (atom discogs-pat-token)})))
 
 (defn- headers->request-metrics
-  "Extract discogs api metrics to a map"
+  "Extract discogs API metrics to a map
+
+   Intended to be used with the reporter callback."
   [headers*]
   {:ratelimit {:used (read-string (get headers* "x-discogs-ratelimit-used"))
                :limit (read-string (get headers* "x-discogs-ratelimit"))
@@ -50,6 +50,12 @@
   (-> body
       (json/read-value json/keyword-keys-object-mapper)))
 
+(defn- http-request
+  [{:keys [url query-params] :as spec}]
+  (log/infof "client requesting discogs endpoint %s with params %s"
+             url query-params)
+  (http/request spec))
+
 (defn mk-request
   "Make a request to the service - intended to be used for
    library internal only.
@@ -59,7 +65,9 @@
 
    This can obviously leads to api limit responses."
   {:added "0.1.0"}
-  ([{:keys [token] :as client} method resource parameters]
+  ([client method resource parameters]
+   (mk-request client method resource parameters identity))
+  ([{:keys [token] :as client} method resource parameters extractor]
    (let [request*
          (cond-> {:method method
                   :headers {:content-type "application/json"
@@ -68,19 +76,15 @@
                             :authorization (format "Discogs token=%s" @token)}
                   :url (str api-endpoint resource)}
            parameters (assoc :query-params parameters))]
-     (try
-       (loop [results []
-              next nil]
-         (let [request (if next
-                         (merge (dissoc request* :url :query-params) {:url next})
-                         request*)
-               {:keys [headers body]} (http/request request)
-               metrics-headers (headers->request-metrics headers)
-               result (parse-results body)]
-           (report/compute-reporter! client metrics-headers)
-           (if-let [next-source (pagination->next result)]
-             (recur (concat results (:results result)) next-source)
-             results)))
-       (catch Exception e
-         {:success false
-          :failure (.getMessage e)})))))
+     (loop [results [] next nil]
+       (let [request (if next
+                       (merge (dissoc request* :url :query-params) {:url next})
+                       request*)
+             {:keys [headers body]} (http-request request)
+             metrics-headers (headers->request-metrics headers)
+             result (parse-results body)
+             xtracted (extractor result)]
+         (report/compute-reporter! client metrics-headers)
+         (if-let [next-source (pagination->next result)]
+           (recur (concat results xtracted) next-source)
+           (concat results xtracted)))))))
