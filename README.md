@@ -1,7 +1,4 @@
-# discogs  [![Clojure CI](https://github.com/iomonad/discogs/actions/workflows/clojure.yml/badge.svg?branch=master)](https://github.com/iomonad/discogs/actions/workflows/clojure.yml) <a href="https://github.com/iomonad/components"><img src=".github/banner.png" height="280" align="right"></a>
-
-
-
+# discogs  [![Clojure CI](https://github.com/iomonad/discogs/actions/workflows/clojure.yml/badge.svg?branch=master)](https://github.com/iomonad/discogs/actions/workflows/clojure.yml) <a href="https://github.com/iomonad/discogs"><img src=".github/banner.png" height="280" align="right"></a>
 
 > [!NOTE]
 > A fully-featured, data-oriented, [Discogs](https://discogs.com) API Client written in pure clojure.
