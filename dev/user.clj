@@ -2,6 +2,7 @@
   (:require [discogs.database :as db]
             [discogs.identity :as di]
             [discogs.client :as dc]
+            [discogs.marketplace :as dm]
             [unilog.config :as ul]
             [discogs.reporter :refer [set-quota-reporter-callback!]]
             [clojure.tools.logging :as log]))
@@ -48,4 +49,12 @@
 
   (clojure.pprint/print-table (di/get-submissions client "djgtek"))
   (clojure.pprint/pprint (di/get-contributions client "djgtek"))
+
+
+  (def x (dm/get-user-inventory client "big_._bang"))
+  (clojure.pprint/pprint x)
+
+  (dm/calculate-fee client "100.2")
+
+  (dm/get-selling-statistics client "81247" {:curr_abbr "EUR"})
   )

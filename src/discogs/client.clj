@@ -62,7 +62,7 @@
 
 (defn- http-request
   [{:keys [url query-params] :as spec}]
-  (log/infof "client requesting discogs endpoint %s with params %s"
+  (log/debugf "client requesting discogs endpoint %s with params %s"
              url query-params)
   (http/request spec))
 
@@ -80,7 +80,6 @@
   ([{:keys [token] :as client} method resource parameters extractor]
    (let [request*
          (cond-> {:method method
-                  :debug true
                   :headers (cond-> {:content-type "application/json"
                                     :accept "application/json"
                                     :user-agent user-agent}

@@ -2,6 +2,8 @@
 
 ### 0.1.1
 - Defaut reporting callback
+- Request method now log in DEBUG level
+- Added Read-Only method to interact with marketplace, __for the moment__
 
 #### Added
 
