@@ -16,6 +16,9 @@
   ;; Create Anonymous client, some API Methods will not work
   (def client (mk-client))
 
+  ;; Create token with Key + Secret
+  (def client (mk-client \"fooKm..9QeN\" \"wBaR..e8t0\"))
+
   ;; Create client with PAT
   (def client (mk-client \"cWyNjw....MfhcYOZ\"))"
   {:added "0.1.0"}
@@ -23,11 +26,18 @@
    {:method :anonymous
     :token (atom nil)
     :quota-reporter (atom nil)})
+  ([api-key api-secret]
+   (merge
+    (mk-client)
+    {:method :key+secret
+     :token (atom
+             (format "Discogs key=%s, secret=%s"
+                     api-key api-secret))}))
   ([discogs-pat-token]
    (merge
     (mk-client)
     {:method :pat
-     :token (atom discogs-pat-token)})))
+     :token (atom (format "Discogs token=%s" discogs-pat-token))})))
 
 (defn- headers->request-metrics
   "Extract discogs API metrics to a map
@@ -70,10 +80,11 @@
   ([{:keys [token] :as client} method resource parameters extractor]
    (let [request*
          (cond-> {:method method
-                  :headers {:content-type "application/json"
-                            :accept "application/json"
-                            :user-agent user-agent
-                            :authorization (format "Discogs token=%s" @token)}
+                  :debug true
+                  :headers (cond-> {:content-type "application/json"
+                                    :accept "application/json"
+                                    :user-agent user-agent}
+                             @token (assoc :authorization @token))
                   :url (str api-endpoint resource)}
            parameters (assoc :query-params parameters))]
      (loop [results [] next nil]
