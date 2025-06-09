@@ -1,4 +1,4 @@
-(defproject io.trosa/discogs "0.1.0"
+(defproject io.trosa/discogs "0.1.0-SNAPSHOT"
   :description "A data-oriented Discogs API Client"
   :url "https://github.com/iomonad/discogs"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
