@@ -7,13 +7,3 @@
 
 (ul/start-logging!
  (assoc ul/default-configuration :overrides {"discogs" :debug}))
-
-(comment
-
-  (def client (dc/mk-client))
-
-  (set-quota-reporter-callback! client default-reporter)
-
-  (def master (dd/get-master client 13153))
-
-  (dd/search client {:artist "Godflesh"}))

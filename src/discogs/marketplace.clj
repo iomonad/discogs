@@ -41,7 +41,6 @@
    (->> (dc/mk-request client :get (format "/marketplace/listings/%s" listing-id) params map-results)
         first)))
 
-
 (defn calculate-fee
   "The Fee resource allows you to quickly calculate the fee
    for selling an item on the Marketplace."
@@ -51,7 +50,6 @@
   ([client ^Long price params]
    (->> (dc/mk-request client :get (format "/marketplace/fee/%s" price) params map-results)
         first)))
-
 
 (defn get-price-suggestions
   "Retrieve price suggestions for the provided Release ID.
@@ -64,7 +62,6 @@
   ([client release-id]
    (->> (dc/mk-request client :get (format "/marketplace/price_suggestions/%s" release-id) {} map-results)
         first)))
-
 
 (defn get-selling-statistics
   "Retrieve marketplace statistics for the provided Release ID.
