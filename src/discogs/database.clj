@@ -67,6 +67,34 @@
    (->> (dc/mk-request client :get (format "/releases/%s/stats" release-id) {} map-results)
         first)))
 
+(defn get-release-tracklist
+  "For a release-id, retrieve the tracklist."
+  {:added "0.1.3"}
+  ([client release-id]
+   (let [{:keys [tracklist]} (get-release client release-id)]
+     tracklist)))
+
+(defn get-release-videos
+  "For a release-id, retrieve linked videos."
+  {:added "0.1.3"}
+  ([client release-id]
+   (let [{:keys [videos]} (get-release client release-id)]
+     videos)))
+
+(defn get-release-styles
+  "For a release-id, retrieve linked styles."
+  {:added "0.1.3"}
+  ([client release-id]
+   (let [{:keys [styles]} (get-release client release-id)]
+     (into #{} styles))))
+
+(defn get-release-genres
+  "For a release-id, retrieve linked genres."
+  {:added "0.1.3"}
+  ([client release-id]
+   (let [{:keys [genres]} (get-release client release-id)]
+     (into #{} genres))))
+
 ;;    _____                   __
 ;;   /     \ _____    _______/  |_  ___________
 ;;  /  \ /  \\__  \  /  ___/\   __\/ __ \_  __ \
@@ -84,7 +112,6 @@
   ([client master-id]
    (->> (dc/mk-request client :get (format "/masters/%s" master-id) {} map-results)
         first)))
-
 
 (defn get-master-versions
   "Retrieves a list of all Releases that are versions of this master."
@@ -203,9 +230,7 @@
   - If validation fails, throws an exception with explanation data.
 
   Example:
-    (search client {:q \"Godflesh\" :type \"artist\"})
-
-"
+    (search client {:q \"Godflesh\" :type \"artist\"})"
   {:added "0.1.0"}
   ([client query]
    (if (m/validate ds/DiscogsSearchParameters query)

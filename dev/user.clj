@@ -16,6 +16,4 @@
 
   (def master (dd/get-master client 13153))
 
-  (dd/search client {:artist "Godflesh"})
-
-  (clojure.pprint/pprint master))
+  (dd/search client {:artist "Godflesh"}))
