@@ -11,11 +11,11 @@
                                       :username :env/clojars_username
                                       :password :env/clojars_password
                                       :sign-releases false}]]
-  :dependencies [[org.clojure/clojure "1.12.0"]
+  :dependencies [[org.clojure/clojure "1.12.1"]
                  [org.clojure/tools.logging "1.3.0"]
                  [clj-http "3.13.0"]
                  [metosin/jsonista "0.3.13"]
-                 [metosin/malli "0.18.0"]]
+                 [metosin/malli "0.19.1"]]
   :profiles {:dev {:dependencies [[org.clojure/tools.namespace "1.5.0"]
                                   [spootnik/unilog "0.7.32"]]
                    :source-paths ["dev"]
