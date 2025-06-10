@@ -75,6 +75,13 @@
               url query-params)
   (http/request spec))
 
+(defn- dispatch-error!
+  "Convert Status message as Clojure exceptions"
+  {:added "0.1.2"}
+  [{:keys [status body reason-phrase]}]
+  (let [{:keys [message]} (parse-results body)]
+    (throw (ex-info message {:status status :reason reason-phrase}))))
+
 (defn mk-request
   "Make a request to the service - intended to be used for
    library internal only.
@@ -95,15 +102,18 @@
                              @token (assoc :authorization @token))
                   :url (str api-endpoint resource)}
            parameters (assoc :query-params parameters))]
-     (loop [results [] next nil]
-       (let [request (if next
-                       (merge (dissoc request* :url :query-params) {:url next})
-                       request*)
-             {:keys [headers body]} (http-request request)
-             metrics-headers (headers->request-metrics headers)
-             result (parse-results body)
-             xtracted (extractor result)]
-         (report/compute-reporter! client metrics-headers)
-         (if-let [next-source (pagination->next result)]
-           (recur (concat results xtracted) next-source)
-           (concat results xtracted)))))))
+     (try
+       (loop [results [] next nil]
+         (let [request (if next
+                         (merge (dissoc request* :url :query-params) {:url next})
+                         request*)
+               {:keys [headers body]} (http-request request)
+               metrics-headers (headers->request-metrics headers)
+               result (parse-results body)
+               xtracted (extractor result)]
+           (report/compute-reporter! client metrics-headers)
+           (if-let [next-source (pagination->next result)]
+             (recur (concat results xtracted) next-source)
+             (concat results xtracted))))
+       (catch Exception e
+         (dispatch-error! (ex-data e)))))))

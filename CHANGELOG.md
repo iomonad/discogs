@@ -3,6 +3,8 @@
 ### 0.1.2
 #### Added
 - Introduce env variable auth support
+#### Changed
+- Improved Error & HTTP Exceptions handling
 
 ### 0.1.1
 #### Added
