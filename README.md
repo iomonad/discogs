@@ -19,8 +19,18 @@ There is differents way to create a Discogs client, here is a detailed guide to 
 (def client (dc/mk-client))
 ```
 
+#### 2. Using Environnement Variable
 
-#### 2. Create client for application Key & Secrets
+In your execution context, set `DISCOGS_TOKEN` then use:
+
+
+```clojure
+(require '[discogs.client :as dc])
+
+(def client (dc/mk-client)) ;; => {:method :env-variable ...}
+```
+
+#### 3. Create client for application Key & Secrets
 
 - **Go to Discogs Developers Portal:**  
   Visit [Discogs API Documentation](https://www.discogs.com/developers/) to create your developer account
@@ -33,7 +43,7 @@ There is differents way to create a Discogs client, here is a detailed guide to 
 (def client (dc/mk-client "ZrUgstGwOmYzWChuPXrH" "S3FEVERXljTmdQZ3ZoY0NocloK"))
 ```
 
-#### 3. Create Using PAT
+#### 4. Create Using PAT
 
 To generate a Personal Access Token (PAT) for the Discogs API, follow these steps:
 

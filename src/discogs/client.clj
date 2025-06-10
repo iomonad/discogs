@@ -8,6 +8,8 @@
 (defonce ^:private user-agent (format "clj-discogs/%s +https://github.com/iomonad/discogs" (client-version)))
 (defonce ^:private api-endpoint "https://api.discogs.com")
 
+(defn- ->env-token [] (System/getenv "DISCOGS_TOKEN"))
+
 (defn mk-client
   "Build a Discogs API client.
 
@@ -16,6 +18,9 @@
   ;; Create Anonymous client, some API Methods will not work
   (def client (mk-client))
 
+  ;; If you have `DISCOGS_TOKEN` env set
+  (def client (mk-client)) ;; {:method :env-variable ...}
+
   ;; Create token with Key + Secret
   (def client (mk-client \"fooKm..9QeN\" \"wBaR..e8t0\"))
 
@@ -23,9 +28,13 @@
   (def client (mk-client \"cWyNjw....MfhcYOZ\"))"
   {:added "0.1.0"}
   ([]
-   {:method :anonymous
-    :token (atom nil)
-    :quota-reporter (atom nil)})
+   (merge
+    (if-let [token (->env-token)]
+      {:method :env-variable
+       :token (atom token)}
+      {:method :anonymous
+       :token (atom nil)})
+    {:quota-reporter (atom nil)}))
   ([api-key api-secret]
    (merge
     (mk-client)
@@ -63,8 +72,15 @@
 (defn- http-request
   [{:keys [url query-params] :as spec}]
   (log/debugf "client requesting discogs endpoint %s with params %s"
-             url query-params)
+              url query-params)
   (http/request spec))
+
+(defn- dispatch-error!
+  "Convert Status message as Clojure exceptions"
+  {:added "0.1.2"}
+  [{:keys [status body reason-phrase]}]
+  (let [{:keys [message]} (parse-results body)]
+    (throw (ex-info message {:status status :reason reason-phrase}))))
 
 (defn mk-request
   "Make a request to the service - intended to be used for
@@ -86,15 +102,18 @@
                              @token (assoc :authorization @token))
                   :url (str api-endpoint resource)}
            parameters (assoc :query-params parameters))]
-     (loop [results [] next nil]
-       (let [request (if next
-                       (merge (dissoc request* :url :query-params) {:url next})
-                       request*)
-             {:keys [headers body]} (http-request request)
-             metrics-headers (headers->request-metrics headers)
-             result (parse-results body)
-             xtracted (extractor result)]
-         (report/compute-reporter! client metrics-headers)
-         (if-let [next-source (pagination->next result)]
-           (recur (concat results xtracted) next-source)
-           (concat results xtracted)))))))
+     (try
+       (loop [results [] next nil]
+         (let [request (if next
+                         (merge (dissoc request* :url :query-params) {:url next})
+                         request*)
+               {:keys [headers body]} (http-request request)
+               metrics-headers (headers->request-metrics headers)
+               result (parse-results body)
+               xtracted (extractor result)]
+           (report/compute-reporter! client metrics-headers)
+           (if-let [next-source (pagination->next result)]
+             (recur (concat results xtracted) next-source)
+             (concat results xtracted))))
+       (catch Exception e
+         (dispatch-error! (ex-data e)))))))
