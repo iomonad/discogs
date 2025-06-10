@@ -89,9 +89,40 @@ Default callback will monitor when quota is below 10 left. (Logged as a warn)
 
 ### Interact With Database
 
-> TODO
+Some basic examples:
 
-### Commons Algorithms
+```clojure
+(require '[discogs.database :as d])
+
+;; Search for artist productions
+
+(def results (d/search client {:artist "Godflesh"}))
+
+(-> (group-by :type results)
+    (update-vals count)) ;; {"release" 376, "master" 35}
+
+;; Search for Masters & Versions
+
+(def master (d/get-master client 13153))
+(def versions (d/get-master-versions client 13153))
+
+(->> (take 5 versions)
+     (map #(select-keys % [:title :released :label :id :catno]))
+     (clojure.pprint/print-table))
+;; |        :title | :released |  :label |      :id |    :catno |
+;; |---------------+-----------+---------+----------+-----------|
+;; | Streetcleaner |      1989 | Earache |    73735 | MOSH 15CD |
+;; | Streetcleaner |      1989 | Artrock |  2871848 |       A-3 |
+;; | Streetcleaner |      1989 | Earache |  7285314 | MOSH 15MC |
+;; | Streetcleaner |      1989 | Earache |  6841727 |   MOSH 15 |
+;; | Streetcleaner |      1989 | Earache | 14672296 |   MOSH 15 |
+```
+
+> [!NOTE]
+> See all the availables API methods on [CLJDOC](https://cljdoc.org/d/io.trosa/discogs/0.1.2/api/discogs)
+
+
+### Algorithms
 
 > TODO
 
