@@ -2,6 +2,7 @@
 
 ### 0.1.2
 #### Added
+- Introduce env variable auth support
 
 ### 0.1.1
 #### Added

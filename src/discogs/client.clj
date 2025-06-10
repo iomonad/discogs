@@ -8,6 +8,8 @@
 (defonce ^:private user-agent (format "clj-discogs/%s +https://github.com/iomonad/discogs" (client-version)))
 (defonce ^:private api-endpoint "https://api.discogs.com")
 
+(defn- ->env-token [] (System/getenv "DISCOGS_TOKEN"))
+
 (defn mk-client
   "Build a Discogs API client.
 
@@ -16,6 +18,9 @@
   ;; Create Anonymous client, some API Methods will not work
   (def client (mk-client))
 
+  ;; If you have `DISCOGS_TOKEN` env set
+  (def client (mk-client)) ;; {:method :env-variable ...}
+
   ;; Create token with Key + Secret
   (def client (mk-client \"fooKm..9QeN\" \"wBaR..e8t0\"))
 
@@ -23,9 +28,13 @@
   (def client (mk-client \"cWyNjw....MfhcYOZ\"))"
   {:added "0.1.0"}
   ([]
-   {:method :anonymous
-    :token (atom nil)
-    :quota-reporter (atom nil)})
+   (merge
+    (if-let [token (->env-token)]
+      {:method :env-variable
+       :token (atom token)}
+      {:method :anonymous
+       :token (atom nil)})
+    {:quota-reporter (atom nil)}))
   ([api-key api-secret]
    (merge
     (mk-client)
@@ -63,7 +72,7 @@
 (defn- http-request
   [{:keys [url query-params] :as spec}]
   (log/debugf "client requesting discogs endpoint %s with params %s"
-             url query-params)
+              url query-params)
   (http/request spec))
 
 (defn mk-request
