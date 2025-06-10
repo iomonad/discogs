@@ -1,4 +1,5 @@
 (ns discogs.specs
+  "Specs & Contracts for input and output validation"
   (:require [malli.core :as m]))
 
 (def DiscogsResourceType

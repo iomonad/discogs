@@ -1,4 +1,5 @@
 (ns discogs.identity
+  "Identity related methods"
   (:require [discogs.client :as dc]
             [discogs.utils :refer [map-results]]))
 
@@ -24,7 +25,6 @@
   {:added "0.1.0"}
   ([client username]
    (first (dc/mk-request client :get (format "/users/%s" username) {} map-results))))
-
 
 (defn get-submissions
   "The Submissions resource represents all edits that a user makes
