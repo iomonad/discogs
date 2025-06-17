@@ -1,4 +1,5 @@
 (ns discogs.reporter
+  "Reporting callback about API Quota"
   (:require [clojure.tools.logging :as log]))
 
 (defn set-quota-reporter-callback!

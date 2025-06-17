@@ -1,13 +1,9 @@
 (ns user
   (:require [discogs.client :as dc]
+            [discogs.database :as dd]
             [unilog.config :as ul]
             [discogs.reporter :refer [set-quota-reporter-callback!
                                       default-reporter]]))
 
-(ul/start-logging! ul/default-configuration)
-
-(comment
-
-  (def client (dc/mk-client))
-
-  (set-quota-reporter-callback! client default-reporter))
+(ul/start-logging!
+ (assoc ul/default-configuration :overrides {"discogs" :debug}))

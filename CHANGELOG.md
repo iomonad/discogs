@@ -1,5 +1,10 @@
 ## Changelog
 
+### 0.1.3
+#### Changed
+- Bump org.clojure/clojure 1.12.1
+- Bump metosin/malli 0.19.1
+
 ### 0.1.2
 #### Added
 - Introduce env variable auth support
