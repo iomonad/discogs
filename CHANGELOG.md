@@ -1,5 +1,11 @@
 ## Changelog
 
+### 0.1.4
+#### Changed
+- Bump org.clojure/clojure 1.12.2
+- Bump clj-http 3.13.1
+- Added `similar-artists` function
+
 ### 0.1.3
 #### Changed
 - Bump org.clojure/clojure 1.12.1
