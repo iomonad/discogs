@@ -7,7 +7,7 @@
 
 (def lib       'io.trosa/discogs)
 ;;(def version    (some-> (sh/sh "git" "describe" "--tags" "--abbrev=0") :out (str/trim-newline)))
-(def version "0.1.6-SNAPSHOT")
+(def version "0.1.7-SNAPSHOT")
 (def class-dir "target/classes")
 (def jar-file  (format "target/%s-%s.jar" (name lib) version))
 (def basis     (delay (b/create-basis {:project "deps.edn"})))
