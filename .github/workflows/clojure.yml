@@ -1,59 +1,47 @@
-#
-# File: clojure.yml
-#
-
-name: Clojure CI
+name: Clojure CI + Clojars
 
 on:
   push:
     branches: [ "master", "devel" ]
+    tags: 
+      - '*'
   pull_request:
     branches: [ "master", "devel" ]
 
 jobs:
-
-  clojure:
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        sdk: [21]
-
-    runs-on: ${{ matrix.os }}
-
+  build:
+    permissions:
+      id-token: write
+      pages: write
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Prepare java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '${{ matrix.sdk }}'
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: 21
 
-      - name: Install clojure tools
-        uses: DeLaGuardo/setup-clojure@13.2
-        with:
-          cli: 1.10.1.693
-          lein: 2.9.1
-          bb: 0.7.8
-          clj-kondo: 2022.05.31
-          cljfmt: 0.10.2
+    - name: Install clojure tools
+      uses: DeLaGuardo/setup-clojure@13.5.2
+      with:
+        cli: 1.12.4.1582
 
-      - name: Cache clojure dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.m2/repository
-          key: cljdeps-${{ hashFiles('project.clj') }}
-          restore-keys: cljdeps-
+    - name: Install dependencies
+      run: clojure -P
 
-      - name: Run CI
-        run: lein test
+    - name: Run tests
+      run: clojure -M:test
 
-      - name: Deploy to Clojars
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/devel'
-        run: lein deploy
-        env:
-          CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
-          CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
+    - name: Build the JAR
+      run: clojure -T:build jar
+
+    - name: Deploy to Clojars
+      if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/devel'
+      run: clojure -T:build deploy
+      env:
+        CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
+        CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
